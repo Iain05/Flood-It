@@ -17,6 +17,17 @@ public class Main
     public static int gridHeight = 20;
     public static int boxSize = 20;
     
+    public static Color[] tileTextColor = {
+            new Color(255,0,255),
+            new Color(255, 0, 0),
+            new Color(0, 255, 255),
+            new Color(255, 255, 0),
+            new Color(0, 187, 0),
+            new Color(255,204,102),
+            new Color(102,102,255),
+            new Color(128,0,128),
+    };
+    
     public static void main(String[] args) {
         
         initGridGUI();
