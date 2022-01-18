@@ -12,6 +12,9 @@ public class Main {
     public static int gridWidth = 22;
     public static int gridHeight = 22;
     public static int boxSize = 20;
+    
+    public static int currentMoves = 0;
+    public static int maxMoves = 61;
 
     public static int numColours = 8;
     public static Color[] boxColor = {
@@ -64,10 +67,22 @@ public class Main {
         Random random = new Random();
         for (int i = 1; i <= gridHeight; i++) {
             for (int j = 1; j <= gridWidth; j++) {
+                Box tempBox = boxes[i][j];
+                
                 JLabel tempLabel = new JLabel("", SwingConstants.CENTER);
                 tempLabel.setOpaque(true);
                 tempLabel.setPreferredSize(new Dimension(boxSize, boxSize));
-
+                tempLabel.addMouseListener(new MouseAdapter() {
+                    public void mousePressed(MouseEvent e) {
+                        if (tempBox.colorIndex != boxes[1][1].colorIndex) {
+                            floodColor(tempBox.colorIndex);
+                            currentMoves++;
+                            movesRemaining();
+                        }   
+                    }
+                });
+                
+                
                 boxes[i][j].label = tempLabel;
                 boxes[i][j].setColor(random.nextInt(numColours));
                    
@@ -176,7 +191,7 @@ public class Main {
         footerLabel.setOpaque(true);
         footerLabel.setBackground(Color.WHITE);
         footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 22));
-        footerLabel.setText("boop");
+        movesRemaining();
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 0, 5, 0);
@@ -191,7 +206,7 @@ public class Main {
     }
     
     public static void movesRemaining() {
-        footerLabel.setText("Moves Remaining: ");
+        footerLabel.setText(currentMoves + "/" + maxMoves);
     }
     
     public static void createBorders(GridBagConstraints c) {
@@ -238,6 +253,9 @@ public class Main {
         c.gridwidth = 1;
         c.gridheight = gridHeight + 2;
         panel.add(borderLabelRight, c);
+    }
+    public static void floodColor(int color) {
+        boxes[1][1].setColor(color);
     }
 }
     
