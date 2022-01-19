@@ -12,7 +12,7 @@ public class Main {
     public static int gridWidth = 22;
     public static int gridHeight = 22;
     public static int boxSize = 20;
-    
+
     public static int currentMoves = 0;
     public static int maxMoves = 61;
 
@@ -28,25 +28,24 @@ public class Main {
             new Color(255, 0, 255),
     };
 
-    public static Box[][] boxes = new Box[gridHeight+2][gridWidth+2];
+    public static Box[][] boxes = new Box[gridHeight + 2][gridWidth + 2];
 
     public static void main(String[] args) {
         resetGame();
     }
 
-        public static void resetGame() {
-
+    public static void resetGame() {
         frame.setResizable(true);
         frame.getContentPane().revalidate();
-        
+
         initMenuBar();
         initBoxes();
         initGridGUI();
         footerGUI();
         startGUI();
-        
+
     }
-    
+
     public static void initGridGUI() {
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -59,16 +58,16 @@ public class Main {
         c.weightx = 0.5;
         c.weighty = 0.5;
         c.fill = GridBagConstraints.BOTH;
-        
+
         createBorders(c);
-        
+
         c.gridwidth = 1;
         c.gridheight = 1;
         Random random = new Random();
         for (int i = 1; i <= gridHeight; i++) {
             for (int j = 1; j <= gridWidth; j++) {
                 Box tempBox = boxes[i][j];
-                
+
                 JLabel tempLabel = new JLabel("", SwingConstants.CENTER);
                 tempLabel.setOpaque(true);
                 tempLabel.setPreferredSize(new Dimension(boxSize, boxSize));
@@ -76,16 +75,16 @@ public class Main {
                     public void mousePressed(MouseEvent e) {
                         if (tempBox.colorIndex != boxes[1][1].colorIndex) {
                             floodColor(tempBox.colorIndex);
+                            frame.getContentPane().repaint();
                             currentMoves++;
                             movesRemaining();
-                        }   
+                        }
                     }
                 });
-                
-                
+
                 boxes[i][j].label = tempLabel;
                 boxes[i][j].setColor(random.nextInt(numColours));
-                   
+
                 c.gridy = i;
                 c.gridx = j;
                 panel.add(tempLabel, c);
@@ -100,6 +99,7 @@ public class Main {
         frame.setResizable(false);
         frame.setVisible(true);
     }
+
     public static void initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -110,13 +110,13 @@ public class Main {
         exitItem.setMnemonic(KeyEvent.VK_X);
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);
-        
-        
+
+
         JMenuItem restartItem = new JMenuItem("Restart");
         restartItem.setMnemonic(KeyEvent.VK_R);
         restartItem.addActionListener(e -> resetGame());
         fileMenu.add(restartItem);
-        
+
         menuBar.add(fileMenu);
 
         JMenu difficultyMenu = new JMenu("Size");
@@ -143,12 +143,12 @@ public class Main {
             gridWidth = 22;
             resetGame();
         });
-        
+
         difficultyMenu.add(easyItem);
         difficultyMenu.add(mediumItem);
         difficultyMenu.add(hardItem);
         menuBar.add(difficultyMenu);
-        
+
         JMenu numColoursMenu = new JMenu("Colors");
         numColoursMenu.setMnemonic(KeyEvent.VK_C);
 
@@ -178,6 +178,7 @@ public class Main {
 
         frame.setJMenuBar(menuBar);
     }
+
     public static void initBoxes() {
         for (int i = 1; i <= gridHeight; i++) {
             for (int j = 1; j <= gridWidth; j++) {
@@ -185,7 +186,7 @@ public class Main {
             }
         }
     }
-    
+
     public static void footerGUI() {
         footerLabel = new JLabel("", SwingConstants.CENTER);
         footerLabel.setOpaque(true);
@@ -200,65 +201,105 @@ public class Main {
         c.fill = GridBagConstraints.BOTH;
 
         c.gridx = 0;
-        c.gridy = gridHeight+2;
-        c.gridwidth = gridWidth+2;
+        c.gridy = gridHeight + 2;
+        c.gridwidth = gridWidth + 2;
         panel.add(footerLabel, c);
     }
-    
+
     public static void movesRemaining() {
         footerLabel.setText(currentMoves + "/" + maxMoves);
     }
-    
+
     public static void createBorders(GridBagConstraints c) {
         JLabel borderLabelTop = new JLabel("", SwingConstants.CENTER);
         borderLabelTop.setOpaque(true);
-        borderLabelTop.setPreferredSize(new Dimension(1, boxSize/2));
+        borderLabelTop.setPreferredSize(new Dimension(1, boxSize / 2));
         borderLabelTop.setBackground(Color.BLACK);
-        
+
         c.gridy = 0;
         c.gridx = 0;
         c.gridwidth = gridWidth + 2;
         c.gridheight = 1;
         panel.add(borderLabelTop, c);
-        
+
         JLabel borderLabelLeft = new JLabel("", SwingConstants.CENTER);
         borderLabelLeft.setOpaque(true);
-        borderLabelLeft.setPreferredSize(new Dimension(boxSize/2, 1));
+        borderLabelLeft.setPreferredSize(new Dimension(boxSize / 2, 1));
         borderLabelLeft.setBackground(Color.BLACK);
-        
+
         c.gridy = 0;
         c.gridx = 0;
         c.gridwidth = 1;
         c.gridheight = gridHeight + 2;
         panel.add(borderLabelLeft, c);
-        
+
         JLabel borderLabelBottom = new JLabel("", SwingConstants.CENTER);
         borderLabelBottom.setOpaque(true);
-        borderLabelBottom.setPreferredSize(new Dimension(1, boxSize/2));
+        borderLabelBottom.setPreferredSize(new Dimension(1, boxSize / 2));
         borderLabelBottom.setBackground(Color.BLACK);
-        
+
         c.gridy = gridHeight + 1;
         c.gridx = 0;
         c.gridwidth = gridWidth + 2;
         c.gridheight = 1;
         panel.add(borderLabelBottom, c);
-        
+
         JLabel borderLabelRight = new JLabel("", SwingConstants.CENTER);
         borderLabelRight.setOpaque(true);
-        borderLabelRight.setPreferredSize(new Dimension(boxSize/2, 1));
+        borderLabelRight.setPreferredSize(new Dimension(boxSize / 2, 1));
         borderLabelRight.setBackground(Color.BLACK);
-        
+
         c.gridy = 0;
         c.gridx = gridWidth + 1;
         c.gridwidth = 1;
         c.gridheight = gridHeight + 2;
         panel.add(borderLabelRight, c);
     }
+
     public static void floodColor(int color) {
-        boxes[1][1].setColor(color);
+        int[] SURROUNDED_TILES_X = {0, 1, 0, -1};
+        int[] SURROUNDED_TILES_Y = {-1, 0, 1, 0};
+        int y, x;
+        int tempY, tempX;
+        int[][] queue = new int[gridWidth * gridHeight][2];
+        boolean[][] visited = new boolean[gridHeight + 1][gridWidth + 1];
+        int queueIndex = 0;
+        int queueLength = 1;
+        int originalColor = boxes[1][1].colorIndex;
+
+        queue[0][0] = 1;
+        queue[0][1] = 1;
+        for (int i = 1; i <= gridHeight; i++) {
+            for (int j = 1; j <= gridWidth; j++) {
+                visited[i][j] = false;
+            }
+        }
+        visited[1][1] = true;
+
+        while (queueIndex < queueLength) {
+            y = queue[queueIndex][0];
+            x = queue[queueIndex][1];
+            boxes[y][x].setColor(color);
+
+            for (int i = 0; i < 4; i++) {
+                tempY = y + SURROUNDED_TILES_Y[i];
+                tempX = x + SURROUNDED_TILES_X[i];
+                if (tempY < 1 || tempY > gridHeight || tempX < 1 || tempX > gridWidth) continue;
+
+                if (boxes[tempY][tempX].colorIndex == originalColor && !visited[tempY][tempX]) {
+                    visited[tempY][tempX] = true;
+
+                    queue[queueLength][0] = tempY;
+                    queue[queueLength][1] = tempX;
+                    queueLength++;
+                }
+            }
+
+            queueIndex++;
+        }
     }
 }
-    
+
 class Box {
     public int colorIndex;
     public JLabel label;
