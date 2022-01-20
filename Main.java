@@ -3,29 +3,43 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.BorderFactory.*;
+import java.util.concurrent.*;
 
 public class Main {
     public static JPanel panel;
     public static JFrame frame = new JFrame("Flood-It");
     public static JLabel footerLabel;
+    public static JLabel sideLabel;
 
     public static int gridWidth = 22;
     public static int gridHeight = 22;
     public static int boxSize = 20;
+    public static String gameSize;
 
     public static int currentMoves = 0;
     public static int maxMoves = 61;
 
     public static int numColours = 8;
     public static Color[] boxColor = {
-            new Color(255, 255, 0),
-            new Color(255, 204, 102),
-            new Color(255, 0, 0),
-            new Color(0, 187, 0),
-            new Color(128, 0, 128),
-            new Color(0, 255, 255),
-            new Color(102, 102, 255),
-            new Color(255, 0, 255),
+            new Color(238,77,77),
+            new Color(255,136,77),
+            new Color(255,196,77),
+            new Color(139,201,77),
+            new Color(77,219,196),   
+            new Color(160,113,255),
+            new Color(255,77,165),
+            new Color(119,132,146),
+    };
+    
+    public static Color[] boxColorHighlight = {
+            new Color(241,113,113),
+            new Color(255,160,113),
+            new Color(255,208,113),
+            new Color(162,212,113),
+            new Color(123,236,218),
+            new Color(179,141,255),
+            new Color(255,113,183),
+            new Color(162,173,184),
     };
 
     public static Box[][] boxes = new Box[gridHeight + 2][gridWidth + 2];
@@ -37,11 +51,14 @@ public class Main {
     public static void resetGame() {
         frame.setResizable(true);
         frame.getContentPane().revalidate();
+        
+        currentMoves = 0;
 
         initMenuBar();
         initBoxes();
         initGridGUI();
         footerGUI();
+        sideLabelGUI();
         startGUI();
 
     }
@@ -67,6 +84,7 @@ public class Main {
         for (int i = 1; i <= gridHeight; i++) {
             for (int j = 1; j <= gridWidth; j++) {
                 Box tempBox = boxes[i][j];
+                
 
                 JLabel tempLabel = new JLabel("", SwingConstants.CENTER);
                 tempLabel.setOpaque(true);
@@ -80,11 +98,18 @@ public class Main {
                             movesRemaining();
                         }
                     }
+                    
+                    public void mouseEntered(MouseEvent e) {
+                        boxes[1][1].setColorHighlight(boxes[1][1].colorIndex);
+                    }
+                    public void mouseExited(MouseEvent e) {
+                        boxes[1][1].setColor(boxes[1][1].colorIndex);
+                    }
                 });
 
                 boxes[i][j].label = tempLabel;
                 boxes[i][j].setColor(random.nextInt(numColours));
-
+                int originalColor = boxes[1][1].colorIndex;
                 c.gridy = i;
                 c.gridx = j;
                 panel.add(tempLabel, c);
@@ -127,6 +152,7 @@ public class Main {
         easyItem.addActionListener(e -> {
             gridHeight = 10;
             gridWidth = 10;
+            gameSize = "small";
             resetGame();
         });
         JMenuItem mediumItem = new JMenuItem("Medium");
@@ -134,6 +160,7 @@ public class Main {
         mediumItem.addActionListener(e -> {
             gridHeight = 16;
             gridWidth = 16;
+            gameSize = "medium";
             resetGame();
         });
         JMenuItem hardItem = new JMenuItem("Large");
@@ -141,6 +168,7 @@ public class Main {
         hardItem.addActionListener(e -> {
             gridHeight = 22;
             gridWidth = 22;
+            gameSize = "large";
             resetGame();
         });
 
@@ -187,13 +215,39 @@ public class Main {
         }
     }
 
+    public static void sideLabelGUI() {
+        sideLabel = new JLabel("", SwingConstants.CENTER);
+        sideLabel.setOpaque(true);
+        sideLabel.setBackground(Color.WHITE);
+
+        movesRemaining();
+        
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 0, 5, 0);
+        c.weightx = 0.5;
+        c.weighty = 0.5;
+        c.fill = GridBagConstraints.BOTH;
+
+        c.gridx = gridWidth + 3;
+        c.gridy = 0;
+        c.gridwidth = gridWidth/2;
+        panel.add(sideLabel, c);
+    }
+    
     public static void footerGUI() {
         footerLabel = new JLabel("", SwingConstants.CENTER);
         footerLabel.setOpaque(true);
         footerLabel.setBackground(Color.WHITE);
-        footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 22));
+        
+        if (gameSize == "small") {
+            footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 16));
+        } else if (gameSize == "medium") {
+            footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 18));
+        } else {
+            footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 22));
+        }
         movesRemaining();
-
+        
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 0, 5, 0);
         c.weightx = 0.5;
@@ -207,7 +261,13 @@ public class Main {
     }
 
     public static void movesRemaining() {
-        footerLabel.setText(currentMoves + "/" + maxMoves);
+        if (gameOverCheck()) {
+            footerLabel.setText("You win in " + currentMoves + " moves!");
+        }
+        else {
+            footerLabel.setText("Moves " + currentMoves);
+        }
+        
     }
 
     public static void createBorders(GridBagConstraints c) {
@@ -294,9 +354,20 @@ public class Main {
                     queueLength++;
                 }
             }
-
             queueIndex++;
         }
+    }
+    
+    public static boolean gameOverCheck() {
+        int color = boxes[1][1].colorIndex;
+        for (int i = 1; i <= gridHeight; i++) {
+            for (int j = 1; j <= gridWidth; j++) {
+                if (boxes[i][j].colorIndex != color) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
@@ -310,5 +381,9 @@ class Box {
     public void setColor(int newColorIndex) {
         colorIndex = newColorIndex;
         label.setBackground(Main.boxColor[colorIndex]);
+    }
+    
+    public void setColorHighlight(int newColorIndex) {
+        label.setBackground(Main.boxColorHighlight[colorIndex]);
     }
 }
