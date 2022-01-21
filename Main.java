@@ -9,12 +9,12 @@ public class Main {
     public static JPanel panel;
     public static JFrame frame = new JFrame("Flood-It");
     public static JLabel footerLabel;
-    public static JLabel sideLabel;
+    public static JLabel headerLabel;
 
-    public static int gridWidth = 22;
-    public static int gridHeight = 22;
+    public static int gridWidth = 32;
+    public static int gridHeight = 32;
     public static int boxSize = 20;
-    public static String gameSize;
+    public static String gameSize = "large";
 
     public static int currentMoves = 0;
     public static int maxMoves = 61;
@@ -57,8 +57,9 @@ public class Main {
         initMenuBar();
         initBoxes();
         initGridGUI();
+        headerGUI();
         footerGUI();
-        sideLabelGUI();
+        
         startGUI();
 
     }
@@ -67,7 +68,7 @@ public class Main {
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setOpaque(true);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(new Color(205,205,205));
         frame.setContentPane(panel);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -99,18 +100,18 @@ public class Main {
                         }
                     }
                     
-                    public void mouseEntered(MouseEvent e) {
-                        boxes[1][1].setColorHighlight(boxes[1][1].colorIndex);
-                    }
-                    public void mouseExited(MouseEvent e) {
-                        boxes[1][1].setColor(boxes[1][1].colorIndex);
-                    }
+                    //public void mouseEntered(MouseEvent e) {
+                    //    boxes[1][1].setColorHighlight(boxes[1][1].colorIndex);
+                    //}
+                    //public void mouseExited(MouseEvent e) {
+                    //    boxes[1][1].setColor(boxes[1][1].colorIndex);
+                    //}
                 });
 
                 boxes[i][j].label = tempLabel;
                 boxes[i][j].setColor(random.nextInt(numColours));
                 int originalColor = boxes[1][1].colorIndex;
-                c.gridy = i;
+                c.gridy = i+1;
                 c.gridx = j;
                 panel.add(tempLabel, c);
             }
@@ -150,24 +151,24 @@ public class Main {
         JMenuItem easyItem = new JMenuItem("Small");
         easyItem.setMnemonic(KeyEvent.VK_S);
         easyItem.addActionListener(e -> {
-            gridHeight = 10;
-            gridWidth = 10;
+            gridHeight = 16;
+            gridWidth = 16;
             gameSize = "small";
             resetGame();
         });
         JMenuItem mediumItem = new JMenuItem("Medium");
         mediumItem.setMnemonic(KeyEvent.VK_M);
         mediumItem.addActionListener(e -> {
-            gridHeight = 16;
-            gridWidth = 16;
+            gridHeight = 24;
+            gridWidth = 24;
             gameSize = "medium";
             resetGame();
         });
         JMenuItem hardItem = new JMenuItem("Large");
         hardItem.setMnemonic(KeyEvent.VK_L);
         hardItem.addActionListener(e -> {
-            gridHeight = 22;
-            gridWidth = 22;
+            gridHeight = 32;
+            gridWidth = 32;
             gameSize = "large";
             resetGame();
         });
@@ -215,12 +216,40 @@ public class Main {
         }
     }
 
-    public static void sideLabelGUI() {
-        sideLabel = new JLabel("", SwingConstants.CENTER);
-        sideLabel.setOpaque(true);
-        sideLabel.setBackground(Color.WHITE);
-
-        movesRemaining();
+    public static void headerGUI() {
+        for (int i = 0; i < numColours; i++) {
+            JLabel tempLabel = new JLabel("", SwingConstants.CENTER);
+            tempLabel.setOpaque(true);
+            tempLabel.setBackground(boxColor[i]);
+            tempLabel.setPreferredSize(new Dimension(boxSize, boxSize));
+            
+            GridBagConstraints c = new GridBagConstraints();
+            c.insets = new Insets(5, 5, 5, 5);
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.BOTH;
+            
+            if (gameSize == "small") {
+                c.gridx = 2*i+1;
+                c.gridwidth = 2;
+            } else if (gameSize == "medium") {
+                c.gridx = 3*i+1;
+                c.gridwidth = 3;
+            } else if (gameSize == "large") {
+                c.gridx = 4*i+1;
+                c.gridwidth = 4;
+            }
+            
+            c.gridy = 0;
+            
+            c.gridheight = 1;
+            panel.add(tempLabel, c);
+            
+        } 
+        /*           
+        headerLabel = new JLabel("", SwingConstants.CENTER);
+        headerLabel.setOpaque(true);
+        headerLabel.setBackground(new Color(175,175,175));
         
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 0, 5, 0);
@@ -228,16 +257,17 @@ public class Main {
         c.weighty = 0.5;
         c.fill = GridBagConstraints.BOTH;
 
-        c.gridx = gridWidth + 3;
+        c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = gridWidth/2;
-        panel.add(sideLabel, c);
+        c.gridwidth = gridWidth + 2;
+        panel.add(headerLabel, c);
+        */
     }
     
     public static void footerGUI() {
         footerLabel = new JLabel("", SwingConstants.CENTER);
         footerLabel.setOpaque(true);
-        footerLabel.setBackground(Color.WHITE);
+        footerLabel.setBackground(new Color(205,205,205));
         
         if (gameSize == "small") {
             footerLabel.setFont(new Font("Lato Bold", Font.BOLD, 16));
@@ -255,7 +285,7 @@ public class Main {
         c.fill = GridBagConstraints.BOTH;
 
         c.gridx = 0;
-        c.gridy = gridHeight + 2;
+        c.gridy = gridHeight + 3;
         c.gridwidth = gridWidth + 2;
         panel.add(footerLabel, c);
     }
@@ -275,8 +305,9 @@ public class Main {
         borderLabelTop.setOpaque(true);
         borderLabelTop.setPreferredSize(new Dimension(1, boxSize / 2));
         borderLabelTop.setBackground(Color.BLACK);
-
-        c.gridy = 0;
+        
+        c.insets = new Insets(0, 10, 0, 10);
+        c.gridy = 1;
         c.gridx = 0;
         c.gridwidth = gridWidth + 2;
         c.gridheight = 1;
@@ -286,19 +317,19 @@ public class Main {
         borderLabelLeft.setOpaque(true);
         borderLabelLeft.setPreferredSize(new Dimension(boxSize / 2, 1));
         borderLabelLeft.setBackground(Color.BLACK);
-
-        c.gridy = 0;
+        c.insets = new Insets(0, 10, 0, 0);
+        c.gridy = 1;
         c.gridx = 0;
         c.gridwidth = 1;
-        c.gridheight = gridHeight + 2;
+        c.gridheight = gridHeight + 1;
         panel.add(borderLabelLeft, c);
-
+        c.insets = new Insets(0, 0, 0, 0);
         JLabel borderLabelBottom = new JLabel("", SwingConstants.CENTER);
         borderLabelBottom.setOpaque(true);
         borderLabelBottom.setPreferredSize(new Dimension(1, boxSize / 2));
         borderLabelBottom.setBackground(Color.BLACK);
-
-        c.gridy = gridHeight + 1;
+        c.insets = new Insets(0, 10, 0, 10);
+        c.gridy = gridHeight + 2;
         c.gridx = 0;
         c.gridwidth = gridWidth + 2;
         c.gridheight = 1;
@@ -308,12 +339,13 @@ public class Main {
         borderLabelRight.setOpaque(true);
         borderLabelRight.setPreferredSize(new Dimension(boxSize / 2, 1));
         borderLabelRight.setBackground(Color.BLACK);
-
-        c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridy = 1;
         c.gridx = gridWidth + 1;
         c.gridwidth = 1;
-        c.gridheight = gridHeight + 2;
+        c.gridheight = gridHeight + 1;
         panel.add(borderLabelRight, c);
+        c.insets = new Insets(0, 0, 0, 0);
     }
 
     public static void floodColor(int color) {
