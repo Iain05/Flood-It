@@ -90,7 +90,7 @@ public class Main {
                 JLabel tempLabel = new JLabel("", SwingConstants.CENTER);
                 tempLabel.setOpaque(true);
                 tempLabel.setPreferredSize(new Dimension(boxSize, boxSize));
-                tempLabel.addMouseListener(new MouseAdapter() {
+                /*tempLabel.addMouseListener(new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
                         if (tempBox.colorIndex != boxes[1][1].colorIndex) {
                             floodColor(tempBox.colorIndex);
@@ -98,7 +98,7 @@ public class Main {
                             currentMoves++;
                             movesRemaining();
                         }
-                    }
+                    }*/
                     
                     //public void mouseEntered(MouseEvent e) {
                     //    boxes[1][1].setColorHighlight(boxes[1][1].colorIndex);
@@ -106,7 +106,7 @@ public class Main {
                     //public void mouseExited(MouseEvent e) {
                     //    boxes[1][1].setColor(boxes[1][1].colorIndex);
                     //}
-                });
+               
 
                 boxes[i][j].label = tempLabel;
                 boxes[i][j].setColor(random.nextInt(numColours));
@@ -222,6 +222,17 @@ public class Main {
             tempLabel.setOpaque(true);
             tempLabel.setBackground(boxColor[i]);
             tempLabel.setPreferredSize(new Dimension(boxSize, boxSize));
+            int j = i;
+            tempLabel.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    if (j != boxes[1][1].colorIndex) {
+                        floodColor(j);
+                        frame.getContentPane().repaint();
+                        currentMoves++;
+                        movesRemaining();
+                    }
+                }
+            });
             
             GridBagConstraints c = new GridBagConstraints();
             c.insets = new Insets(5, 5, 5, 5);
