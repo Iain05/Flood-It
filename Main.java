@@ -9,6 +9,7 @@ public class Main {
     public static JPanel panel;
     public static JFrame frame = new JFrame("Flood-It");
     public static JLabel footerLabel;
+    public static JLabel playAgainLabel;
     public static JLabel headerLabel;
 
     public static int gridWidth = 32;
@@ -46,6 +47,7 @@ public class Main {
 
     public static void main(String[] args) {
         resetGame();
+        new HowToPlay();
     }
 
     public static void resetGame() {
@@ -257,22 +259,6 @@ public class Main {
             panel.add(tempLabel, c);
             
         } 
-        /*           
-        headerLabel = new JLabel("", SwingConstants.CENTER);
-        headerLabel.setOpaque(true);
-        headerLabel.setBackground(new Color(175,175,175));
-        
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 0, 5, 0);
-        c.weightx = 0.5;
-        c.weighty = 0.5;
-        c.fill = GridBagConstraints.BOTH;
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = gridWidth + 2;
-        panel.add(headerLabel, c);
-        */
     }
     
     public static void footerGUI() {
@@ -300,6 +286,8 @@ public class Main {
         c.gridwidth = gridWidth + 2;
         panel.add(footerLabel, c);
     }
+    
+    
 
     public static void movesRemaining() {
         if (gameOverCheck()) {
@@ -428,5 +416,13 @@ class Box {
     
     public void setColorHighlight(int newColorIndex) {
         label.setBackground(Main.boxColorHighlight[colorIndex]);
+    }
+}
+
+class HowToPlay {
+    JFrame f;
+    public HowToPlay() {
+        f = new JFrame();
+        JOptionPane.showMessageDialog(f,"Fill the screen with one colour to win by clicking the colours at the top!");
     }
 }
